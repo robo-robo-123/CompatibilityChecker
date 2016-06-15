@@ -1,0 +1,189 @@
+﻿<Page
+    x:Name="pageRoot"
+    x:Class="CompatibilityChecker.BasicPage1"
+
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CompatibilityChecker"
+    xmlns:common="using:CompatibilityChecker.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+  RequestedTheme="Light">
+  <!--    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"-->
+  <Page.Resources>
+    <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
+    <x:String x:Key="AppName">タイプ相性チェッカー for XY</x:String>
+    <CollectionViewSource x:Name="cvs1" />
+  </Page.Resources>
+  <Page.BottomAppBar>
+    <AppBar>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal">
+          <AppBarButton HorizontalAlignment="Stretch" x:Uid="dellist" Label="リストの削除" VerticalAlignment="Stretch" Icon="Delete">
+
+            <AppBarButton.Flyout>
+              <Flyout x:Name="Flyout2" >
+                <Grid Width="250">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Border x:Name="flyoutTitleBorder" Background="#89BDDE">
+                    <TextBlock x:Name="flyoutTitleText" FontSize="15" HorizontalAlignment="Stretch"
+        							Margin="10,5">
+        							<Run x:Uid="rem" Text="リストの中身を消去する"/>
+                    </TextBlock>
+                  </Border>
+                  <Grid Grid.Row="1" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock FontSize="18" TextWrapping="Wrap" Width="250">
+        							<Run x:Uid="delEx" Text="削除ボタンを押すとリストの中身が全て削除されます。復元はできません。"/>
+                    </TextBlock>
+                  </Grid>
+
+
+                  <Grid Grid.Row="4" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="deleteOkButton" Click="deleteOkButton_Click" x:Uid="del"
+        							Width="{Binding ActualWidth, ElementName=favoriteCancelButton, Mode=OneWay}" Content="削除" />
+                    <Button x:Name="deleteCancelButton" Grid.Column="1" Click="deleteCancelButton_Click"
+        							HorizontalAlignment="Right" x:Uid="can" Content="キャンセル"/>
+                  </Grid>
+                </Grid>
+              </Flyout>
+            </AppBarButton.Flyout>
+
+
+          </AppBarButton>
+        </StackPanel>
+        <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal"/>
+      </Grid>
+    </AppBar>
+  </Page.BottomAppBar>
+
+  <!--
+        {ThemeResource ApplicationPageBackgroundThemeBrush}This grid acts as a root panel for the page that defines two rows:
+        * Row 0 contains the back button and page title
+        * Row 1 contains the rest of the page layout
+    -->
+  <Grid x:Name="defaultNavigation" Background="#89BDDE">
+    <Grid.ChildrenTransitions>
+      <TransitionCollection>
+        <EntranceThemeTransition/>
+      </TransitionCollection>
+    </Grid.ChildrenTransitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="140"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+
+    <Grid Grid.Row="1" x:Name="contentRegion" >
+      <Grid x:Name="checkGrid" HorizontalAlignment="Center" Margin="0,10,10,0" VerticalAlignment="Top" Width="450" Visibility="Visible" Height="500" >
+        <Grid.RowDefinitions>
+          <RowDefinition Height="55*"/>
+          <RowDefinition Height="2*"/>
+          <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="StackPanel1" Margin="0" >
+          <Grid.RowDefinitions>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="93*"/>
+          </Grid.RowDefinitions>
+          <ComboBox x:Name="pageSelectBox" FontSize="24" Background="#FF89BDDE" BorderBrush="#FF89BDDE" 
+ VerticalAlignment="Top" Height="32" Grid.Row="0" SelectionChanged="pageSelectBox_SelectionChanged_1"/>
+
+          <ListView x:Name="ListView1" SelectionMode="Single"   ItemsSource="{Binding}" ItemClick="ListView1_ItemClick"   IsRightTapEnabled="True" RightTapped="ListViewItem_RightTapped" SelectionChanged="ListView1_SelectionChanged" Margin="25,0" Grid.RowSpan="2"  
+                   Grid.Row="1" >
+            <ListView.ItemTemplate>
+              <DataTemplate>
+                <StackPanel x:Name="checkPanel" Orientation="Vertical" Background="White" Width="400">
+                  <TextBlock Text="{Binding MemoName}" FontSize="14.667" FontFamily="Segoe UI" Margin="5,0,0,0"/>
+                  <TextBlock Text="{Binding date}" FontSize="14.667" FontFamily="Segoe UI" Margin="5,0,0,0"/>
+                </StackPanel>
+
+              </DataTemplate>
+            </ListView.ItemTemplate>
+          </ListView>
+
+
+        </Grid>
+
+
+
+        <TextBlock x:Uid="item" Text="選択した項目に対して：" Grid.Row="1" FontSize="14" />
+
+        <Button x:Name="checkButton" x:Uid="check" Content="復元" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Bottom" Tapped="checkButton_Tapped" Grid.Row="2"/>
+        <Button x:Name="deleteButton" x:Uid="del" Content="削除" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Bottom" Tapped="deleteButton_Tapped_1" Grid.Row="2"/>
+
+
+      </Grid>
+    </Grid>
+
+
+    <!-- Back button and page title -->
+    <Grid x:Name="titleGrid" Visibility="Visible">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="120"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <!--<Button x:Name="backButton" Margin="39,59,39,0" Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}"
+                        Style="{StaticResource NavigationBackButtonNormalStyle}"
+                        VerticalAlignment="Top"
+                        AutomationProperties.Name="Back"
+                        AutomationProperties.AutomationId="BackButton"
+                        AutomationProperties.ItemType="Navigation Button"/>-->
+      <TextBlock x:Name="pageTitle" x:Uid="tcc" Text="{StaticResource AppName}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+                        IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
+    </Grid>
+
+    <Grid x:Name="miniTitleGrid" Visibility="Collapsed" VerticalAlignment="Center" Margin="0,10,0,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="40"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <!--<Button x:Name="backButton" Margin="39,59,39,0" Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}"
+                        Style="{StaticResource NavigationBackButtonNormalStyle}"
+                        VerticalAlignment="Top"
+                        AutomationProperties.Name="Back"
+                        AutomationProperties.AutomationId="BackButton"
+                        AutomationProperties.ItemType="Navigation Button"/>-->
+      <TextBlock x:Name="minipageTitle" x:Uid="tcc" Text="タイプ相性チェッカー for XY" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
+                        IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Center" FontSize="24" />
+    </Grid>
+
+
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup>
+        <VisualState x:Name="ContentRegion">
+        </VisualState>
+        <VisualState x:Name="MinicontentRegion">
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="titleGrid" Storyboard.TargetProperty="Visibility">
+              <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed"/>
+            </ObjectAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="miniTitleGrid" Storyboard.TargetProperty="Visibility">
+              <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+
+  </Grid>
+</Page>

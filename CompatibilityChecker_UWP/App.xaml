@@ -1,8 +1,26 @@
 ﻿<Application
-    x:Class="CompatibilityChecker_UWP.App"
+    x:Class="CompatibilityChecker.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:CompatibilityChecker_UWP"
-    RequestedTheme="Light">
+    xmlns:local="using:CompatibilityChecker"
+    xmlns:localData="using:CompatibilityChecker.Data">
 
+    <Application.Resources>
+
+        <!--アプリケーション固有のリソース -->
+    <x:String x:Key="AppName" >タイプ相性チェッカー for XY</x:String>
+    <!-- 【第11回】広告のパラメーター-->
+      <!--
+    <x:String x:Key="ApplicationId1">1bdb0426-7d37-4e5d-9f35-0cf4cea88729</x:String>
+    <x:String x:Key="AdUnitId1L">169553</x:String>
+    <x:String x:Key="AdUnitId1S">166544</x:String>
+-->
+      <!--サンプルパラメータ-->
+
+      <x:String x:Key="ApplicationId1">d25517cb-12d4-4699-8bdc-52040c712cab</x:String>
+    <x:String x:Key="AdUnitId1L">10043030</x:String>
+    <x:String x:Key="AdUnitId1S">10043104</x:String>      
+
+      
+  </Application.Resources>
 </Application>

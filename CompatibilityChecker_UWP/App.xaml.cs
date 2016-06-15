@@ -1,20 +1,35 @@
-﻿using System;
+﻿using CompatibilityChecker.Common;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.ApplicationSettings;
 
-namespace CompatibilityChecker_UWP
+// グリッド アプリケーション テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=234226 を参照してください
+
+namespace CompatibilityChecker
 {
     /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
+    /// 既定の Application クラスに対してアプリケーション独自の動作を実装します。
     /// </summary>
     sealed partial class App : Application
     {
         /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
+        /// 単一アプリケーション オブジェクトを初期化します。これは、実行される作成したコードの
+        /// 最初の行であり、main() または WinMain() と論理的に等価です。
         /// </summary>
         public App()
         {
@@ -23,73 +38,109 @@ namespace CompatibilityChecker_UWP
         }
 
         /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
+        /// アプリケーションがエンド ユーザーによって正常に起動されたときに呼び出されます。他のエントリ ポイントは、
+        /// アプリケーションが特定のファイルを開くために呼び出されたときなどに使用されます。
         /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        /// <param name="e">起動要求とプロセスの詳細を表示します。</param>
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
+            // デバッグ中にグラフィックスのプロファイル情報を表示します。
             if (System.Diagnostics.Debugger.IsAttached)
             {
+                // 現在のフレーム レート カウンターを表示します
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
+            // ウィンドウに既にコンテンツが表示されている場合は、アプリケーションの初期化を繰り返さずに、
+            // ウィンドウがアクティブであることだけを確認してください
+
             if (rootFrame == null)
             {
-                // Create a Frame to act as the navigation context and navigate to the first page
+                // ナビゲーション コンテキストとして動作するフレームを作成し、最初のページに移動します
                 rootFrame = new Frame();
+                //フレームを SuspensionManager キーに関連付けます                                
+                SuspensionManager.RegisterFrame(rootFrame, "AppFrame");
+                // 既定の言語を設定します
+                rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    // 必要な場合のみ、保存されたセッション状態を復元します
+                    try
+                    {
+                        await SuspensionManager.RestoreAsync();
+                    }
+                    catch (SuspensionManagerException)
+                    {
+                        //状態の復元に何か問題があります。
+                        //状態がないものとして続行します
+                    }
                 }
 
-                // Place the frame in the current Window
+                // フレームを現在のウィンドウに配置します
                 Window.Current.Content = rootFrame;
-            }
+              //チャームに関して
+                //SettingsLoad(); 
 
+            }
             if (rootFrame.Content == null)
             {
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
-                rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                // ナビゲーションの履歴スタックが復元されていない場合、最初のページに移動します。
+                // このとき、必要な情報をナビゲーション パラメーターとして渡して、新しいページを
+                // 作成します
+              rootFrame.Navigate(typeof(ItemDetailPage), e.Arguments);
             }
-            // Ensure the current window is active
+            // 現在のウィンドウがアクティブであることを確認します
             Window.Current.Activate();
         }
 
         /// <summary>
-        /// Invoked when Navigation to a certain page fails
+        /// 特定のページへの移動が失敗したときに呼び出されます
         /// </summary>
-        /// <param name="sender">The Frame which failed navigation</param>
-        /// <param name="e">Details about the navigation failure</param>
+        /// <param name="sender">移動に失敗したフレーム</param>
+        /// <param name="e">ナビゲーション エラーの詳細</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
-        /// without knowing whether the application will be terminated or resumed with the contents
-        /// of memory still intact.
+        /// アプリケーションの実行が中断されたときに呼び出されます。アプリケーションの状態は、
+        /// アプリケーションが終了されるのか、メモリの内容がそのままで再開されるのか
+        /// わからない状態で保存されます。
         /// </summary>
-        /// <param name="sender">The source of the suspend request.</param>
-        /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        /// <param name="sender">中断要求の送信元。</param>
+        /// <param name="e">中断要求の詳細。</param>
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
+            await SuspensionManager.SaveAsync();
             deferral.Complete();
         }
+      /*
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+          SettingsPane.GetForCurrentView().CommandsRequested += OnCommandsRequested;
+        }
+
+        private void OnCommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+
+          args.Request.ApplicationCommands.Add(new SettingsCommand(
+              "Custom Setting", "Custom Setting", (handler) => ShowCustomSettingFlyout()));
+        }
+
+        public void ShowCustomSettingFlyout()
+        {
+          AppExplain CustomSettingFlyout = new AppExplain();
+          CustomSettingFlyout.Show();
+        }*/
     }
 }
