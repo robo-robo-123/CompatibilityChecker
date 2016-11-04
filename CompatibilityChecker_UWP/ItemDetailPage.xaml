@@ -85,7 +85,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"-->
   <Grid x:Name="defaultNavigation" Background="#89BDDE"
         DataContext="{Binding Item}"
-        d:DataContext="{Binding Groups[0].Items[0], Source={d:DesignData Source=/DataModel/SampleData.json, Type=data:SampleDataSource}}"  Visibility="Visible">
+         Visibility="Visible">
     <Grid.ChildrenTransitions>
       <TransitionCollection>
         <EntranceThemeTransition/>

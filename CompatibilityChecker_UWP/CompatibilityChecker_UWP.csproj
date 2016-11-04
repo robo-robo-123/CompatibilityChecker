@@ -109,6 +109,7 @@
     <Compile Include="BasicPage1.xaml.cs">
       <DependentUpon>BasicPage1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\BindableBase.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
@@ -118,9 +119,14 @@
     <Compile Include="ItemDetailPage.xaml.cs">
       <DependentUpon>ItemDetailPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\MainPageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultMemo.cs" />
     <Compile Include="Type.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="View\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -171,7 +177,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
